@@ -5,13 +5,22 @@ from rest_framework.decorators import api_view, action
 from rest_framework.reverse import reverse
 from rest_framework.response import Response
 
-from .models import Machine, MachineGroup, Policy
-from .serializers import UserSerializer, MachineSerializer, MachineGroupSerializer, PolicySerializer
+from .models import Machine, MachineGroup, Policy, Performance
+from .serializers import UserSerializer, MachineSerializer, MachineGroupSerializer, PolicySerializer, PerformanceSerializer
 # Create your views here.
 
 
 def dashboard(request):
-    return render(request, "logserver/dashboard.html")
+    hosts = Machine.objects.all()
+    host_count = hosts.count()
+    normal_count = 1  # hosts.filter(status="normal").count()
+    alert_count = 0  # hosts.filter(status="alert").count()
+    offline_count = 1  # hosts.filter(status="offline").count()
+    return render(request, "logserver/dashboard1.html", {'hosts': hosts, 'host_count': host_count, 'normal_count': normal_count, 'alert_count': alert_count, 'offline_count': offline_count})
+
+
+def host(request, pk):
+    return render(request, "logserver/host.html")
 
 
 @api_view(['GET'])
@@ -54,6 +63,15 @@ class PolicyViewSet(viewsets.ModelViewSet):
 class MachineViewSet(viewsets.ModelViewSet):
     queryset = Machine.objects.all()
     serializer_class = MachineSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def perform_create(self, serializer):
+        serializer.save(owner=self.request.user)
+
+
+class PerformanceViewSet(viewsets.ModelViewSet):
+    queryset = Performance.objects.all()
+    serializer_class = PerformanceSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):

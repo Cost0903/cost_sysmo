@@ -8,6 +8,8 @@ router.register(r"users", views.UserViewSet, basename="user")
 router.register(r"machinegroups", views.MachineGroupViewSet,
                 basename="machinegroup")
 router.register(r"policies", views.PolicyViewSet, basename="policy")
+router.register(r"performances", views.PerformanceViewSet,
+                basename="performance")
 
 urlpatterns = [
     # path("", views.index, name="index"),

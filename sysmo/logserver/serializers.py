@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Machine, MachineGroup, Policy
+from .models import Machine, MachineGroup, Policy, Performance
 from django.contrib.auth.models import User
 
 
@@ -10,7 +10,7 @@ class MachineSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Machine
         fields = ['url', 'owner', 'ruuid', 'hostname',
-                  'uuid', 'os', 'interface', 'group']
+                  'uuid', 'os', 'interface', 'disktable', 'group']
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -37,3 +37,11 @@ class PolicySerializer(serializers.HyperlinkedModelSerializer):
         model = Policy
         fields = ['url', 'id', 'name', 'cpupolicy', 'mempolicy', 'swappolicy',
                   'diskpolicy']
+
+
+class PerformanceSerializer(serializers.HyperlinkedModelSerializer):
+    id = serializers.ReadOnlyField(source='performance.id')
+
+    class Meta:
+        model = Performance
+        fields = ['url', 'id', 'machine', 'cpu', 'mem', 'swap', 'disk']
