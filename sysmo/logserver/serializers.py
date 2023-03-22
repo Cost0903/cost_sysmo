@@ -15,7 +15,7 @@ class MachineSerializer(serializers.HyperlinkedModelSerializer):
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     machines = serializers.HyperlinkedRelatedField(
-        many=True, view_name='machine-detail', read_only=True)
+        many=True, view_name='machine-detail', queryset=Machine.objects.all())
 
     class Meta:
         model = User
@@ -23,11 +23,14 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class MachineGroupSerializer(serializers.HyperlinkedModelSerializer):
-    id = serializers.ReadOnlyField(source='machinegroup.id')
+    # id = serializers.ReadOnlyField(source='machinegroup.id')
+    # machines = serializers.StringRelatedField(many=True)
+    machines = serializers.HyperlinkedRelatedField(
+        many=True, view_name='machine-detail', queryset=Machine.objects.all())
 
     class Meta:
         model = MachineGroup
-        fields = ['url', 'id', 'name', 'Gpolicy']
+        fields = ['url', 'id', 'name', 'Gpolicy', 'machines']
 
 
 class PolicySerializer(serializers.HyperlinkedModelSerializer):
@@ -41,6 +44,7 @@ class PolicySerializer(serializers.HyperlinkedModelSerializer):
 
 class PerformanceSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField(source='performance.id')
+    
 
     class Meta:
         model = Performance

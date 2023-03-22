@@ -19,11 +19,11 @@ class Machine(models.Model):
     ruuid = models.CharField(max_length=40, unique=True, verbose_name="RUUID")
     os = models.CharField(max_length=10, verbose_name="作業系統")
     owner = models.ForeignKey("auth.user", verbose_name=(
-        "擁有者"), on_delete=models.CASCADE)
+        "擁有者"), on_delete=models.CASCADE, related_name="machines")
     interface = models.JSONField(blank=True, null=True, verbose_name="網路介面")
     disktable = models.JSONField(blank=True, null=True, verbose_name="磁碟資訊")
     group = models.ForeignKey("MachineGroup", blank=True, null=True, verbose_name=(
-        "主機群組"), on_delete=models.SET_NULL)
+        "主機群組"), on_delete=models.SET_NULL, related_name="machines")
 
     def __str__(self):  # 顯示名稱
         return self.hostname
@@ -38,6 +38,9 @@ class MachineGroup(models.Model):
     def __str__(self):
         return self.name
 
+    def getMachine(self, group):
+        return Machine.objects.filter(group=group)
+
 
 class Policy(models.Model):
     id = models.AutoField(primary_key=True)
@@ -46,7 +49,8 @@ class Policy(models.Model):
     mempolicy = models.JSONField(default=policy_default, verbose_name="MEM策略")
     swappolicy = models.JSONField(
         default=policy_default, verbose_name="SWAP策略")
-    diskpolicy = models.JSONField(blank=True, null=True, verbose_name="Disk策略") # { MountPoint: "/", value: "90", level: "Critical" }
+    # { MountPoint: "/", value: "90", level: "Critical" }
+    diskpolicy = models.JSONField(blank=True, null=True, verbose_name="Disk策略")
 
     def __str__(self):
         return self.name
