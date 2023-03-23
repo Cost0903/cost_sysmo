@@ -1,0 +1,11 @@
+# Database file
+db.sqlite3
+
+# venv file
+.venv/*
+
+# vscode file
+.vscode/*
+
+# migration files
+sysmo/logserver/migrations/__pycache__/*
