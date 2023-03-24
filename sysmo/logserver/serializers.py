@@ -9,8 +9,10 @@ class MachineSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Machine
-        fields = ['url', 'owner', 'ruuid', 'hostname',
-                  'uuid', 'os', 'interface', 'disktable', 'group']
+        fields = [
+            'url', 'owner', 'ruuid', 'hostname', 'uuid', 'os', 'interface',
+            'disktable', 'group'
+        ]
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -38,13 +40,14 @@ class PolicySerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Policy
-        fields = ['url', 'id', 'name', 'cpupolicy', 'mempolicy', 'swappolicy',
-                  'diskpolicy']
+        fields = [
+            'url', 'id', 'name', 'cpupolicy', 'mempolicy', 'swappolicy',
+            'diskpolicy'
+        ]
 
 
 class PerformanceSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.ReadOnlyField(source='performance.id')
-    
 
     class Meta:
         model = Performance

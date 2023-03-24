@@ -8,4 +8,7 @@ db.sqlite3
 .vscode/*
 
 # migration files
-sysmo/logserver/migrations/__pycache__/*
+sysmo/logserver/migrations/*
+
+# __pycache__/
+*/__pycache__/*

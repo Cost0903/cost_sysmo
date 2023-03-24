@@ -29,19 +29,45 @@
   <!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas> -->
 
   <h2>主機清單</h2>
+  <select class="custom-select">
+    <option selected>主機群組</option>
+    {% for group in groups %}
+    <option value="{{ group.id }}">{{ group.name }}</option>
+    {% endfor %}
+  </select>
   <div class="table-responsive">
     <table class="table table-striped table-sm">
       <thead>
         <tr>
-          <th>主機名稱</th>
-          <th>主機群組</th>
-          <th>擁有者</th>
-          <th>CPU</th>
-          <th>Memory</th>
-          <th>Swap</th>
-          <th>Disk</th>
-          <th>更新時間</th>
-          <th>狀態</th>
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <th>
+              <button type="button" class="btn btn-secondary">主機名稱</button>
+            </th>
+            <th>
+              <button type="button" class="btn btn-secondary">主機群組</button>
+            </th>
+            <th>
+              <button type="button" class="btn btn-secondary">擁有者</button>
+            </th>
+            <th>
+              <button type="button" class="btn btn-secondary">CPU</button>
+            </th>
+            <th>
+              <button type="button" class="btn btn-secondary">Memory</button>
+            </th>
+            <th>
+              <button type="button" class="btn btn-secondary">Swap</button>
+            </th>
+            <th>
+              <button type="button" class="btn btn-secondary">Disk</button>
+            </th>
+            <th>
+              <button type="button" class="btn btn-secondary">更新時間</button>
+            </th>
+            <th>
+              <button type="button" class="btn btn-secondary">狀態</button>
+            </th>
+          </div>
         </tr>
       </thead>
       <tbody>

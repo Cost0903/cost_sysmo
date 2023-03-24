@@ -12,11 +12,20 @@ from .serializers import UserSerializer, MachineSerializer, MachineGroupSerializ
 
 def dashboard(request):
     hosts = Machine.objects.all()
+    groups = MachineGroup.objects.all()
     host_count = hosts.count()
     normal_count = 1  # hosts.filter(status="normal").count()
     alert_count = 0  # hosts.filter(status="alert").count()
     offline_count = 1  # hosts.filter(status="offline").count()
-    return render(request, "logserver/dashboard1.html", {'hosts': hosts, 'host_count': host_count, 'normal_count': normal_count, 'alert_count': alert_count, 'offline_count': offline_count})
+    return render(
+        request, "logserver/dashboard1.html", {
+            'hosts': hosts,
+            'host_count': host_count,
+            'normal_count': normal_count,
+            'alert_count': alert_count,
+            'offline_count': offline_count,
+            'groups': groups
+        })
 
 
 def host(request, pk):
@@ -26,8 +35,10 @@ def host(request, pk):
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
-        'users': reverse('user-list', request=request, format=format),
-        'machines': reverse('machine-list', request=request, format=format),
+        'users':
+        reverse('user-list', request=request, format=format),
+        'machines':
+        reverse('machine-list', request=request, format=format),
     })
 
 

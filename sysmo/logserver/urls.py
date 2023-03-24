@@ -5,10 +5,12 @@ from . import views
 router = DefaultRouter()
 router.register(r"machines", views.MachineViewSet, basename="machine")
 router.register(r"users", views.UserViewSet, basename="user")
-router.register(r"machinegroups", views.MachineGroupViewSet,
+router.register(r"machinegroups",
+                views.MachineGroupViewSet,
                 basename="machinegroup")
 router.register(r"policies", views.PolicyViewSet, basename="policy")
-router.register(r"performances", views.PerformanceViewSet,
+router.register(r"performances",
+                views.PerformanceViewSet,
                 basename="performance")
 
 urlpatterns = [
