@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User, Group
+from django.contrib.auth.decorators import login_required
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import api_view, action
 from rest_framework.reverse import reverse
@@ -8,8 +9,14 @@ from rest_framework.response import Response
 from .models import Machine, MachineGroup, Policy, Performance
 from .serializers import UserSerializer, MachineSerializer, MachineGroupSerializer, PolicySerializer, PerformanceSerializer
 # Create your views here.
+import logging, json
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s',
+                    datefmt='[%d/%b/%Y %H:%M:%S]')
 
 
+@login_required
 def dashboard(request):
     hosts = Machine.objects.all()
     groups = MachineGroup.objects.all()
@@ -26,6 +33,33 @@ def dashboard(request):
             'offline_count': offline_count,
             'groups': groups
         })
+
+
+def group(request):
+    groups = MachineGroup.objects.all()
+    return render(request, "logserver/group.html", {'groups': groups})
+
+
+def group_content(request, name):
+    machines = Machine.objects.filter(group__name=name)
+    return render(request, "logserver/group.html", {'machines': machines})
+
+
+def policy(request):
+    policies = Policy.objects.all()
+    return render(request, "logserver/policy.html", {'policies': policies})
+
+
+def policy_content(request, name):
+    policy = Policy.objects.filter(name=name)
+    groups = None
+    try:
+        groups = MachineGroup.objects.filter(Gpolicy=policy[0].id)
+    except:
+        logging.info("The Policy is not apply to any groups.")
+    logging.info(f"Group = {groups}")
+    context = {'policy': policy[0], 'groups': groups}
+    return render(request, 'logserver/policy_content.html', context=context)
 
 
 def host(request, pk):
