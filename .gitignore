@@ -12,3 +12,6 @@ sysmo/logserver/migrations/*
 
 # __pycache__/
 */__pycache__/*
+
+# .pyc file
+*.pyc
