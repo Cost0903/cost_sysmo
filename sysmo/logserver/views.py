@@ -42,7 +42,8 @@ def group(request):
 
 def group_content(request, name):
     machines = Machine.objects.filter(group__name=name)
-    return render(request, "logserver/group.html", {'machines': machines})
+    return render(request, "logserver/group_content.html",
+                  {'machines': machines})
 
 
 def policy(request):

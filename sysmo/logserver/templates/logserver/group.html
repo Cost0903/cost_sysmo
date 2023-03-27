@@ -29,11 +29,12 @@
             {% for group in groups %}
             <tr>
             <td>
-                <a href="{% url 'group_content' group.name %}">
+                <a href="{% url 'logserver:group_content' group.name %}">
                     {{ group.name }}
             </td>
             <td>
-                <a href="{% url 'policy_content' group.Gpolicy %}">{{ group.Gpolicy }}
+                <a href="{% url 'logserver:policy_content' group.Gpolicy %}">
+                    {{ group.Gpolicy }}
             </td>
             </tr>
             {% endfor %}

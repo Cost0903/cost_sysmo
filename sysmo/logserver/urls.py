@@ -13,6 +13,7 @@ router.register(r"performances",
                 views.PerformanceViewSet,
                 basename="performance")
 
+app_name = "logserver"
 urlpatterns = [
     # path("", views.index, name="index"),
     path("", include(router.urls)),

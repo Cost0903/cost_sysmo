@@ -17,19 +17,19 @@
         <tr>
           <div class="btn-group" role="group" aria-label="Basic example">
             <th>
-              <button type="button" class="btn btn-secondary">群組名稱</button>
+              <button type="button" class="btn btn-secondary">主機名稱</button>
             </th>
             <th>
-              <button type="button" class="btn btn-secondary">政策群組</button>
+              <button type="button" class="btn btn-secondary">Machine ID</button>
             </th>
           </div>
         </tr>
       </thead>
       <tbody>
-        {% for group in groups %}
+        {% for machine in machines %}
         <tr>
-          <td>{{ group.name }}</td>
-          <td>{{ group.Gpolicy }}</td>
+          <td id="{{ machine.hostname }}">{{ machine.hostname }}</td>
+          <td>{{ machine.ruuid }}</td>
         </tr>
         {% endfor %}
     </tbody>
