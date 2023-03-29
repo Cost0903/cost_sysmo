@@ -16,7 +16,7 @@ logging.basicConfig(level=logging.INFO,
                     datefmt='[%d/%b/%Y %H:%M:%S]')
 
 
-@login_required
+# @login_required
 def dashboard(request):
     hosts = Machine.objects.all()
     groups = MachineGroup.objects.all()
@@ -55,7 +55,7 @@ def policy_content(request, name):
     policy = Policy.objects.filter(name=name)
     groups = None
     try:
-        groups = MachineGroup.objects.filter(Gpolicy=policy[0].id)
+        groups = MachineGroup.objects.filter(policy=policy[0].id)
     except:
         logging.info("The Policy is not apply to any groups.")
     logging.info(f"Group = {groups}")
@@ -74,17 +74,23 @@ def api_root(request, format=None):
         reverse('user-list', request=request, format=format),
         'machines':
         reverse('machine-list', request=request, format=format),
+        'machinegroups':
+        reverse('machinegroup-list', request=request, format=format),
+        'policies':
+        reverse('policy-list', request=request, format=format),
     })
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    lookup_field = 'pk'
 
 
 class MachineGroupViewSet(viewsets.ModelViewSet):
     queryset = MachineGroup.objects.all()
     serializer_class = MachineGroupSerializer
+    # lookup_field = 'name'
 
     # @action(detail=True, methods=['get'])
     # def default_group(self, request):
@@ -104,12 +110,14 @@ class PolicyViewSet(viewsets.ModelViewSet):
     queryset = Policy.objects.all()
     serializer_class = PolicySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    # lookup_field = 'id'
 
 
 class MachineViewSet(viewsets.ModelViewSet):
     queryset = Machine.objects.all()
     serializer_class = MachineSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    lookup_field = 'pk'
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)

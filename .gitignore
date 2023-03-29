@@ -11,7 +11,10 @@ db.sqlite3
 sysmo/logserver/migrations/*
 
 # __pycache__/
-*/__pycache__/*
+logserver/__pycache__/*
 
 # .pyc file
 *.pyc
+
+# mirgations
+logserver/migrations/*
