@@ -79,7 +79,9 @@ class Performance(models.Model):
     id = models.AutoField(primary_key=True)
     machine = models.ForeignKey("Machine",
                                 verbose_name=("主機"),
-                                on_delete=models.CASCADE)
+                                on_delete=models.CASCADE,
+                                related_name="performances")
+    # CPU 3 digits , 1 decimal_places # 99.1
     cpu_usage = models.DecimalField(verbose_name="CPU",
                                     max_digits=5,
                                     decimal_places=2)

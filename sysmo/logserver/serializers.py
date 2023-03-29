@@ -64,8 +64,15 @@ class PolicySerializer(serializers.HyperlinkedModelSerializer):
 
 
 class PerformanceSerializer(serializers.HyperlinkedModelSerializer):
-    id = serializers.ReadOnlyField(source='performance.id')
+    # id = serializers.ReadOnlyField(source='performance.id')
+    machine = serializers.HyperlinkedRelatedField(
+        view_name='machine-detail',
+        queryset=Machine.objects.all(),
+        lookup_field='pk')
 
     class Meta:
         model = Performance
-        fields = ['url', 'id', 'machine', 'cpu', 'mem', 'swap', 'disk']
+        fields = [
+            'url', 'id', 'machine', 'cpu_usage', 'mem_usage', 'swap_usage',
+            'disk_usage', 'datetime'
+        ]
