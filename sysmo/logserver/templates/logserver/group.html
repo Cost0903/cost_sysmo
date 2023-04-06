@@ -33,8 +33,12 @@
                     {{ group.name }}
             </td>
             <td>
-                <a href="{% url 'policy_content' group.Gpolicy %}">
-                    {{ group.Gpolicy }}
+                {% if group.policy != None %}
+                    <a href="{% url 'policy_content' group.policy %}">
+                        {{ group.policy }}
+                {% else %}
+                    {{ group.policy }}
+                {% endif %}
             </td>
             </tr>
             {% endfor %}

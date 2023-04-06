@@ -37,11 +37,14 @@
       <tbody>
         {% for policy in policies %}
         <tr>
-          <td>{{ policy.name }}</td>
-          <td>{{ policy.cpupolicy }}</td>
-          <td>{{ policy.mempolicy }}</td>
-          <td>{{ policy.swappoicy }}</td>
-          <td>{{ policy.diskpolicy }}</td>
+          <td>
+            <a href="{% url 'policy_content' policy.name %}">
+              {{ policy.name }}
+          </td>
+          <td>{{ policy.cpu_policy }}</td>
+          <td>{{ policy.mem_policy }}</td>
+          <td>{{ policy.swap_policy }}</td>
+          <td>{{ policy.disk_policy }}</td>
         </tr>
         {% endfor %}
     </tbody>

@@ -55,11 +55,13 @@
                 </tr>
             </thead>
             <tbody>
+                {% for group in groups %}
                 <tr>
-                    {% for group in groups %}
-                        <td>{{ group.name }}</td>
-                    {% endfor %}
+                    <td>
+                        <a href="{% url 'group_content' group.name %}">
+                            {{ group.name }}</td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

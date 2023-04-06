@@ -73,7 +73,8 @@
       <tbody>
         {% for host in hosts %}
         <tr>
-          <td>{{ host }}</td>
+          <td><a href="{% url 'host' host %}">
+            {{ host }}</td>
           <td>{{ host.group }}</td>
           <td>{{ host.owner }}</td>
           <td>CPU</td>

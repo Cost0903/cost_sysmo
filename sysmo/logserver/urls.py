@@ -22,4 +22,5 @@ urlpatterns = [
     path(r"group/<str:name>", views.group_content, name='group_content'),
     path("policy/", views.policy, name='policy'),
     path(r"policy/<str:name>", views.policy_content, name='policy_content'),
+    path(r"host/<str:name>", views.host, name='host'),
 ]

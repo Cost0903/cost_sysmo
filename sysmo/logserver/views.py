@@ -63,8 +63,10 @@ def policy_content(request, name):
     return render(request, 'logserver/policy_content.html', context=context)
 
 
-def host(request, pk):
-    return render(request, "logserver/host.html")
+def host(request, name):
+    host = Machine.objects.filter(hostname=name)
+    context = {'host': host[0]}
+    return render(request, "logserver/host.html", context=context)
 
 
 @api_view(['GET'])
@@ -117,7 +119,8 @@ class MachineViewSet(viewsets.ModelViewSet):
     queryset = Machine.objects.all()
     serializer_class = MachineSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    lookup_field = 'pk'
+
+    # lookup_field = 'pk'
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -127,7 +130,7 @@ class PerformanceViewSet(viewsets.ModelViewSet):
     queryset = Performance.objects.all()
     serializer_class = PerformanceSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    lookup_field = 'pk'
+    # lookup_field = 'pk'
 
     # def perform_create(self, serializer):
     #     serializer.save(owner=self.request.user)

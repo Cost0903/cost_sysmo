@@ -20,7 +20,7 @@ class Machine(models.Model):
                             default=uuid.uuid4,
                             editable=False,
                             verbose_name="UUID")
-    ruuid = models.CharField(max_length=40, unique=True, verbose_name="RUUID")
+    ruuid = models.PositiveBigIntegerField(unique=True, verbose_name="RUUID")
     network_info = models.JSONField(verbose_name="網路資訊")
     disk_info = models.JSONField(verbose_name="硬碟資訊")
     cpu_info = models.JSONField(verbose_name="CPU資訊", null=True, blank=True)
