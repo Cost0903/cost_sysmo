@@ -9,7 +9,14 @@ def policy_default():
 
 
 def disk_policy_default():
-    return {"Pass": "0", "Warning": "75", "Major": "90", "Critical": "98"}
+    return {
+        "/": {
+            "Pass": "0",
+            "Warning": "75",
+            "Major": "90",
+            "Critical": "98"
+        }
+    }
 
 
 class Machine(models.Model):

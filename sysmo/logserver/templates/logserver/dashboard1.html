@@ -75,7 +75,8 @@
         <tr>
           <td><a href="{% url 'host' host %}">
             {{ host }}</td>
-          <td>{{ host.group }}</td>
+          <td><a href="{% url 'group_content' host.group %}">
+            {{ host.group }}</td>
           <td>{{ host.owner }}</td>
           <td>CPU</td>
           <td>Memory</td>

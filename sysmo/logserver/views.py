@@ -11,9 +11,23 @@ from .serializers import UserSerializer, MachineSerializer, MachineGroupSerializ
 # Create your views here.
 import logging, json
 
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s',
-                    datefmt='[%d/%b/%Y %H:%M:%S]')
+
+def policy_default():
+    return {"Pass": "0", "Warning": "75", "Major": "90", "Critical": "98"}
+
+
+def disk_policy_default():
+    return {
+        "/": {
+            "Pass": "0",
+            "Warning": "75",
+            "Major": "90",
+            "Critical": "98"
+        }
+    }
+
+
+# LOG_PATH = "/var/log/sysmo-agent/agent.log"
 
 
 # @login_required
@@ -24,31 +38,40 @@ def dashboard(request):
     normal_count = 1  # hosts.filter(status="normal").count()
     alert_count = 0  # hosts.filter(status="alert").count()
     offline_count = 1  # hosts.filter(status="offline").count()
-    return render(
-        request, "logserver/dashboard1.html", {
-            'hosts': hosts,
-            'host_count': host_count,
-            'normal_count': normal_count,
-            'alert_count': alert_count,
-            'offline_count': offline_count,
-            'groups': groups
-        })
+    context = {
+        'hosts': hosts,
+        'host_count': host_count,
+        'normal_count': normal_count,
+        'alert_count': alert_count,
+        'offline_count': offline_count,
+        'groups': groups
+    }
+    return render(request, "logserver/dashboard1.html", context=context)
 
 
 def group(request):
     groups = MachineGroup.objects.all()
-    return render(request, "logserver/group.html", {'groups': groups})
+    context = {'groups': groups}
+    return render(request, "logserver/group.html", context=context)
 
 
 def group_content(request, name):
     machines = Machine.objects.filter(group__name=name)
-    return render(request, "logserver/group_content.html",
-                  {'machines': machines})
+    group = None
+    try:
+        group = Group.objects.filter(name=name)
+    except:
+        group = None
+    finally:
+        group = None if group is None else group
+    context = {'group': group, 'machines': machines}
+    return render(request, "logserver/group_content.html", context=context)
 
 
 def policy(request):
     policies = Policy.objects.all()
-    return render(request, "logserver/policy.html", {'policies': policies})
+    context = {'policies': policies}
+    return render(request, "logserver/policy.html", context=context)
 
 
 def policy_content(request, name):
@@ -112,13 +135,61 @@ class PolicyViewSet(viewsets.ModelViewSet):
     queryset = Policy.objects.all()
     serializer_class = PolicySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    # lookup_field = 'id'
+    lookup_field = 'name'
 
 
 class MachineViewSet(viewsets.ModelViewSet):
+    logging.info("MachineViewSet")
     queryset = Machine.objects.all()
     serializer_class = MachineSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+    def create(self, request, *args, **kwargs):
+        logging.info("Create Method")
+        logging.info(f"request.data = {request.data}")
+        if not request.data.get('group'):
+            try:
+                logging.info("Get default group.")
+                group = MachineGroup.objects.get(name="default")
+            except:
+                logging.info("Create default group.")
+                group = MachineGroup.objects.create(name="default")
+            # request.data['group'] = group.id
+        logging.info(MachineGroup.objects.filter(name="default"))
+        # try:
+        #     MachineGroup.objects.filter(name="default")[0].policy
+        # except:
+        #     logging.info("Create default policy.")
+        #     Policy.objects.create(name="default",
+        #                           cpu_policy=policy_default(),
+        #                           mem_policy=policy_default(),
+        #                           swap_policy=policy_default(),
+        #                           disk_policy=disk_policy_default())
+        return super().create(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        logging.info("Get Method")
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        logging.info("Post Method")
+        logging.info(f"request.data = {request.data}")
+        print(f"request.data = {request.data}")
+        # if request.data.get('group') is None:
+        #     try:
+        #         group = MachineGroup.objects.get(name="default")
+        #     except:
+        #         group = MachineGroup.objects.create(name="default")
+        #     request.data['group'] = group.id
+        # if request.data.get('policy') is None:
+        #     try:
+        #         policy = Policy.objects.get(name="default")
+        #     except:
+        #         policy = Policy.objects.create(name="default")
+        #     request.data['policy'] = policy.id
+        return self.create(request, *args, **kwargs)
+
+    # lookup_field = 'hostname'
 
     # lookup_field = 'pk'
 

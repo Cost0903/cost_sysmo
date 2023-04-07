@@ -41,10 +41,10 @@
             <a href="{% url 'policy_content' policy.name %}">
               {{ policy.name }}
           </td>
-          <td>{{ policy.cpu_policy }}</td>
-          <td>{{ policy.mem_policy }}</td>
-          <td>{{ policy.swap_policy }}</td>
-          <td>{{ policy.disk_policy }}</td>
+          <td class="tojson">{{ policy.cpu_policy }}</td>
+          <td class="tojson">{{ policy.mem_policy }}</td>
+          <td class="tojson">{{ policy.swap_policy }}</td>
+          <td class="diskjson">{{ policy.disk_policy }}</td>
         </tr>
         {% endfor %}
     </tbody>

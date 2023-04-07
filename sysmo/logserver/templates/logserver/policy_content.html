@@ -33,10 +33,10 @@
             </thead>
             <tbody>
                 <tr>
-                    <td><p id="cpupolicy-{{policy.id}}">{{policy.cpupolicy}}</p></td>
-                    <td>{{ policy.mempolicy }}</td>
-                    <td>{{ policy.swappoicy }}</td>
-                    <td>{{ policy.diskpolicy }}</td>
+                    <td class="tojson">{{ policy.cpu_policy }}</td>
+                    <td class="tojson">{{ policy.mem_policy }}</td>
+                    <td class="tojson">{{ policy.swap_policy }}</td>
+                    <td class="diskjson">{{ policy.disk_policy }}</td>
                 </tr>
             </tbody>
         </table>
@@ -67,10 +67,4 @@
     </div>
 </main>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.1/dist/Chart.min.js"></script>
-<script type="text/javascript">
-    var cpu_policy = document.getElementById("cpupolicy-{{ policy.id }}");
-    console.log(cpu_policy)
-    console.log("Pass: " + cpu_policy.pass + "\n" + "Warning: " + cpu_policy.warning + "\n" + "Major: " + cpu_policy.major)
-    document.getElementById('cpupolicy-{{ policy.id }}').value = JSON.stringify("Pass: " + cpu_policy.pass + "\n" + "Warning: " + cpu_policy.warning + "\n" + "Major: " + cpu_policy.major);
-</script>
 {% endblock %}

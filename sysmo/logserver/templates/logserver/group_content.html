@@ -16,10 +16,10 @@
       <thead>
         <tr>
           <div class="btn-group" role="group" aria-label="Basic example">
-            <th>
+            <th class="border-0">
               <button type="button" class="btn btn-secondary">主機名稱</button>
             </th>
-            <th>
+            <th class="border-0">
               <button type="button" class="btn btn-secondary">Machine ID</button>
             </th>
           </div>
@@ -28,7 +28,8 @@
       <tbody>
         {% for machine in machines %}
         <tr>
-          <td id="{{ machine.hostname }}">{{ machine.hostname }}</td>
+          <td id="{{ machine.hostname }}"><a href="{% url 'host' machine.hostname %}">
+            {{ machine.hostname }}</td>
           <td>{{ machine.ruuid }}</td>
         </tr>
         {% endfor %}

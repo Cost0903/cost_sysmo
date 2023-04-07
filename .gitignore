@@ -2,19 +2,21 @@
 db.sqlite3
 
 # venv file
-.venv/*
+.venv/
 
 # vscode file
-.vscode/*
+.vscode/
 
 # migration files
-sysmo/logserver/migrations/*
+sysmo/logserver/migrations/
 
 # __pycache__/
-logserver/__pycache__/*
+logserver/__pycache__/
 
 # .pyc file
 *.pyc
 
 # mirgations
-logserver/migrations/*
+logserver/migrations/
+
+*.log
