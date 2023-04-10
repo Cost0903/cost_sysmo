@@ -26,3 +26,8 @@ logserver/__pycache__/
 logserver/migrations/
 
 *.log
+sysmo/sysmo/__pycache__/settings.cpython-310.pyc
+sysmo/db.sqlite3
+sysmo/logserver/__pycache__/models.cpython-310.pyc
+sysmo/logserver/__pycache__/views.cpython-310.pyc
+sysmo/logserver/__pycache__/serializers.cpython-310.pyc
