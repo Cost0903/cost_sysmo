@@ -29,8 +29,9 @@
   <!-- <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas> -->
 
   <h2>主機清單</h2>
-  <select class="custom-select">
-    <option selected>主機群組</option>
+  <select class="custom-select grouplist">
+    <option selected>All</option>
+    <option value = "{% cycle "web" "server" %}">web</option>
     {% for group in groups %}
     <option value="{{ group.id }}">{{ group.name }}</option>
     {% endfor %}
@@ -77,18 +78,40 @@
             {{ host }}</td>
           <td><a href="{% url 'group_content' host.group %}">
             {{ host.group }}</td>
-          <td>{{ host.owner }}</td>
+          <td>{{ host.owner|capfirst }}</td>
           <td>CPU</td>
           <td>Memory</td>
           <td>Swap</td>
           <td>{{ host.disktable }}</td>
+          <td>{{ host.update_time }}</td>
+          <td>
+            {% if host.status == "normal" %}
+            <span class="badge badge-success">正常</span>
+            {% elif host.status == "alert" %}
+            <span class="badge badge-warning">告警</span>
+            {% elif host.status == "offline" %}
+            <span class="badge badge-danger">斷線</span>
+            {% endif %}
+          </td>
         </tr>
+        {% endfor %}
+        {% for performance in performances %}
+          <tr>
+            <td>{{ performance.machine }}</td>
+            <td>{{ performance.group }}</td>
+            <td>{{ performance.owner }}</td>
+            <td>{{ performance.cpu_usage }}</td>
+            <td>{{ performance.mem_usage }}</td>
+            <td>{{ performance.swap_usage }}</td>
+            <td>{{ performance.disk_usage }}</td>
+            <td>{{ performance.datetime }}</td>
+          </tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.1/dist/Chart.min.js"></script>
+{% comment %} <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.1/dist/Chart.min.js"></script>
 <script>
   var ctx = document.getElementById("myChart");
   var myChart = new Chart(ctx, {
@@ -129,5 +152,5 @@
       },
     },
   });
-</script>
+</script> {% endcomment %}
 {% endblock %}

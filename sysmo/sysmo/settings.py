@@ -12,10 +12,56 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import logging
+import configparser
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-LOG_PATH = "/var/log/sysmo/"
+# LOG_PATH = "/var/log/sysmo/"
+LOG_PATH = ""
+# CONFIG_PATH = "/etc/sysmo/"
+CONFIG_PATH = ""
+AP_CONF = CONFIG_PATH + "server.conf"
+
+ap_cp = configparser.RawConfigParser()
+ap_cp.read(AP_CONF)
+# Server 設定參數
+# Log 相關參數
+DEFAULT_INTERVAL: int = int(ap_cp.get('LOGROTATE', 'INTERVAL'))
+CPU_POLICY: dict = {
+    "Pass": 0,
+    "Warning": int(ap_cp.get('CPU_POLICY', 'CPU_WARNING')),
+    "Major": int(ap_cp.get('CPU_POLICY', 'CPU_MAJOR')),
+    "Critical": int(ap_cp.get('CPU_POLICY', 'CPU_CRITICAL'))
+}
+MEM_POLICY: dict = {
+    "Pass": 0,
+    "Warning": int(ap_cp.get('MEMORY_POLICY', 'MEM_WARNING')),
+    "Major": int(ap_cp.get('MEMORY_POLICY', 'MEM_MAJOR')),
+    "Critical": int(ap_cp.get('MEMORY_POLICY', 'MEM_CRITICAL'))
+}
+SWAP_POLICY: dict = {
+    "Pass": 0,
+    "Warning": int(ap_cp.get('SWAP_POLICY', 'SWAP_WARNING')),
+    "Major": int(ap_cp.get('SWAP_POLICY', 'SWAP_MAJOR')),
+    "Critical": int(ap_cp.get('SWAP_POLICY', 'SWAP_CRITICAL'))
+}
+
+DISK_POLICY: dict = {
+    str(ap_cp.get('DISK_POLICY', 'DISK_MOUNTPOINT')): {
+        "Pass": 0,
+        "Warning": int(ap_cp.get('DISK_POLICY', 'DISK_WARNING')),
+        "Major": int(ap_cp.get('DISK_POLICY', 'DISK_MAJOR')),
+        "Critical": int(ap_cp.get('DISK_POLICY', 'DISK_CRITICAL'))
+    }
+}
+
+# Mail 相關參數
+MAIL_SWITCH: int = int(ap_cp.get('MAIL', 'SWITCH'))
+MAIL_HOST: str = ap_cp.get('MAIL', 'HOST')
+MAIL_PORT: int = int(ap_cp.get('MAIL', 'PORT'))
+MAIL_USE_TLS: str = ap_cp.get('MAIL', 'USE_TLS')
+MAIL_USER: str = ap_cp.get('MAIL', 'USER')
+MAIL_PASSWORD: str = ap_cp.get('MAIL', 'PASSWORD')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -28,8 +74,9 @@ DEBUG = True
 
 logging.basicConfig(
     level=logging.INFO if DEBUG is False else logging.DEBUG,
-    filename="sysmo.log",
-    format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s',
+    filename=LOG_PATH + "sysmo.log",
+    # format = '%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s',
+    format='%(asctime)s %(levelname)s %(name)s : %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S')
 logging.info("Setting Reloaded.")
 

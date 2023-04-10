@@ -35,6 +35,9 @@ def dashboard(request):
     hosts = Machine.objects.all()
     groups = MachineGroup.objects.all()
     host_count = hosts.count()
+    performances = Performance.objects.all()
+    # machine = performances.machine_set.all()
+
     normal_count = 1  # hosts.filter(status="normal").count()
     alert_count = 0  # hosts.filter(status="alert").count()
     offline_count = 1  # hosts.filter(status="offline").count()
@@ -44,7 +47,8 @@ def dashboard(request):
         'normal_count': normal_count,
         'alert_count': alert_count,
         'offline_count': offline_count,
-        'groups': groups
+        'groups': groups,
+        'performances': performances,
     }
     return render(request, "logserver/dashboard1.html", context=context)
 
@@ -115,7 +119,24 @@ class UserViewSet(viewsets.ModelViewSet):
 class MachineGroupViewSet(viewsets.ModelViewSet):
     queryset = MachineGroup.objects.all()
     serializer_class = MachineGroupSerializer
+
     # lookup_field = 'name'
+
+    def list(self, request, *args, **kwargs):
+        logging.info("MachineGroup List Method")
+        logging.info(request.data)
+        if MachineGroup.objects.all().count() == 0:
+            try:
+                policy = Policy.objects.get(name="default")
+            except:
+                policy = Policy.objects.create(
+                    name="default",
+                    cpu_policy=policy_default(),
+                    mem_policy=policy_default(),
+                    swap_policy=policy_default(),
+                    disk_policy=disk_policy_default())
+            MachineGroup.objects.create(name="default", policy=policy)
+        return super().list(request, *args, **kwargs)
 
     # @action(detail=True, methods=['get'])
     # def default_group(self, request):
@@ -137,6 +158,33 @@ class PolicyViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     lookup_field = 'name'
 
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        logging.info("Policy List Method")
+        logging.info(request.data)
+        if Policy.objects.all().count() == 0:
+            Policy.objects.create(name="default",
+                                  cpu_policy=policy_default(),
+                                  mem_policy=policy_default(),
+                                  swap_policy=policy_default(),
+                                  disk_policy=disk_policy_default())
+        return super().list(request, *args, **kwargs)
+
+        # def get(self, request, *args, **kwargs):
+        #     logging.info("Policy Get Method")
+        #     logging.info(request.data)
+        # if Policy.objects.all().count() == 0:
+        #     Policy.objects.create(name="default",
+        #                           cpu_policy=policy_default(),
+        #                           mem_policy=policy_default(),
+        #                           swap_policy=policy_default(),
+        #                           disk_policy=disk_policy_default())
+
+    # policy = Policy.objects.filter(name=name)
+    # return super().list(request, *args, **kwargs)
+
 
 class MachineViewSet(viewsets.ModelViewSet):
     logging.info("MachineViewSet")
@@ -144,28 +192,28 @@ class MachineViewSet(viewsets.ModelViewSet):
     serializer_class = MachineSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def create(self, request, *args, **kwargs):
-        logging.info("Create Method")
-        logging.info(f"request.data = {request.data}")
-        if not request.data.get('group'):
-            try:
-                logging.info("Get default group.")
-                group = MachineGroup.objects.get(name="default")
-            except:
-                logging.info("Create default group.")
-                group = MachineGroup.objects.create(name="default")
-            # request.data['group'] = group.id
-        logging.info(MachineGroup.objects.filter(name="default"))
-        # try:
-        #     MachineGroup.objects.filter(name="default")[0].policy
-        # except:
-        #     logging.info("Create default policy.")
-        #     Policy.objects.create(name="default",
-        #                           cpu_policy=policy_default(),
-        #                           mem_policy=policy_default(),
-        #                           swap_policy=policy_default(),
-        #                           disk_policy=disk_policy_default())
-        return super().create(request, *args, **kwargs)
+    # def create(self, request, *args, **kwargs):
+    #     logging.info("Create Method")
+    #     logging.info(f"request.data = {request.data}")
+    #     if not request.data.get('group'):
+    #         try:
+    #             logging.info("Get default group.")
+    #             group = MachineGroup.objects.get(name="default")
+    #         except:
+    #             logging.info("Create default group.")
+    #             group = MachineGroup.objects.create(name="default")
+    #         # request.data['group'] = group.id
+    #     logging.info(MachineGroup.objects.filter(name="default"))
+    # try:
+    #     MachineGroup.objects.filter(name="default")[0].policy
+    # except:
+    #     logging.info("Create default policy.")
+    #     Policy.objects.create(name="default",
+    #                           cpu_policy=policy_default(),
+    #                           mem_policy=policy_default(),
+    #                           swap_policy=policy_default(),
+    #                           disk_policy=disk_policy_default())
+    # return super().create(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         logging.info("Get Method")

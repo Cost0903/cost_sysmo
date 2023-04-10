@@ -57,3 +57,5 @@ for (index = 0; index < disk_json.length; index++) {
   }
   // console.log(disk_json[index].innerHTML);
 }
+
+var group = document.querySelector(".grouplist");

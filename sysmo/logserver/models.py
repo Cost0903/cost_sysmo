@@ -1,22 +1,6 @@
 from django.db import models
 import uuid
-
-# Create your models here.
-
-
-def policy_default():
-    return {"Pass": "0", "Warning": "75", "Major": "90", "Critical": "98"}
-
-
-def disk_policy_default():
-    return {
-        "/": {
-            "Pass": "0",
-            "Warning": "75",
-            "Major": "90",
-            "Critical": "98"
-        }
-    }
+from sysmo.settings import CPU_POLICY, MEM_POLICY, SWAP_POLICY, DISK_POLICY
 
 
 class Machine(models.Model):
@@ -38,10 +22,9 @@ class Machine(models.Model):
                               on_delete=models.CASCADE,
                               related_name="machines")
     group = models.ForeignKey("MachineGroup",
-                              blank=True,
-                              null=True,
+                              default=1,
                               verbose_name=("主機群組"),
-                              on_delete=models.SET_NULL,
+                              on_delete=models.DO_NOTHING,
                               related_name="machines")
 
     def __str__(self):  # 顯示名稱
@@ -54,29 +37,30 @@ class MachineGroup(models.Model):
     policy = models.ForeignKey("Policy",
                                blank=True,
                                null=True,
+                               default=1,
                                verbose_name=("群組策略"),
                                related_name="machinegroups",
-                               on_delete=models.SET_NULL)
+                               on_delete=models.DO_NOTHING)
+
+    class Meta:
+        verbose_name_plural = "Machine Groups"
 
     def __str__(self):
         return self.name
-
-    def getMachine(self, group):
-        return Machine.objects.filter(group=group)
 
 
 class Policy(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=40, unique=True, verbose_name="策略名稱")
     description = models.TextField(blank=True, null=True, verbose_name="描述")
-    cpu_policy = models.JSONField(default=policy_default, verbose_name="CPU策略")
-    mem_policy = models.JSONField(default=policy_default, verbose_name="MEM策略")
-    swap_policy = models.JSONField(default=policy_default,
-                                   verbose_name="SWAP策略")
+    cpu_policy = models.JSONField(default=CPU_POLICY, verbose_name="CPU策略")
+    mem_policy = models.JSONField(default=MEM_POLICY, verbose_name="MEM策略")
+    swap_policy = models.JSONField(default=SWAP_POLICY, verbose_name="SWAP策略")
     # { MountPoint: "/", value: "90", level: "Critical" }
-    disk_policy = models.JSONField(blank=True,
-                                   null=True,
-                                   verbose_name="Disk策略")
+    disk_policy = models.JSONField(default=DISK_POLICY, verbose_name="Disk策略")
+
+    class Meta:
+        verbose_name_plural = "Policies"
 
     def __str__(self):
         return self.name
@@ -100,6 +84,9 @@ class Performance(models.Model):
                                      decimal_places=2)
     disk_usage = models.JSONField(blank=True, null=True, verbose_name="Disk")
     datetime = models.DateTimeField(auto_now_add=True, verbose_name="時間")
+
+    class Meta:
+        verbose_name_plural = "Performances"
 
     def __str__(self):
         return f"{self.machine.hostname}-{self.datetime}"
