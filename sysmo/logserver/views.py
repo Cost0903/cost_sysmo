@@ -35,9 +35,12 @@ def dashboard(request):
     hosts = Machine.objects.all()
     groups = MachineGroup.objects.all()
     host_count = hosts.count()
-    performances = Performance.objects.all()
+    # performances = Performance.objects.all()
     # machine = performances.machine_set.all()
-
+    performances = []
+    for host in hosts:
+        performances.append(Performance.objects.filter(machine=host).last)
+    # dashboard_value = {}
     normal_count = 1  # hosts.filter(status="normal").count()
     alert_count = 0  # hosts.filter(status="alert").count()
     offline_count = 1  # hosts.filter(status="offline").count()

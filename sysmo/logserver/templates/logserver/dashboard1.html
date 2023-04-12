@@ -41,31 +41,31 @@
       <thead>
         <tr>
           <div class="btn-group" role="group" aria-label="Basic example">
-            <th>
+            <th class="border-0">
               <button type="button" class="btn btn-secondary">主機名稱</button>
             </th>
-            <th>
+            <th class="border-0">
               <button type="button" class="btn btn-secondary">主機群組</button>
             </th>
-            <th>
+            <th class="border-0">
               <button type="button" class="btn btn-secondary">擁有者</button>
             </th>
-            <th>
+            <th class="border-0">
               <button type="button" class="btn btn-secondary">CPU</button>
             </th>
-            <th>
+            <th class="border-0">
               <button type="button" class="btn btn-secondary">Memory</button>
             </th>
-            <th>
+            <th class="border-0">
               <button type="button" class="btn btn-secondary">Swap</button>
             </th>
-            <th>
+            <th class="border-0">
               <button type="button" class="btn btn-secondary">Disk</button>
             </th>
-            <th>
+            <th class="border-0">
               <button type="button" class="btn btn-secondary">更新時間</button>
             </th>
-            <th>
+            <th class="border-0">
               <button type="button" class="btn btn-secondary">狀態</button>
             </th>
           </div>
@@ -104,7 +104,7 @@
             <td>{{ performance.mem_usage }}</td>
             <td>{{ performance.swap_usage }}</td>
             <td>{{ performance.disk_usage }}</td>
-            <td>{{ performance.datetime }}</td>
+            <td>{{ performance.datetime | date:'Y-m-d H:i:s' }}</td>
           </tr>
         {% endfor %}
       </tbody>

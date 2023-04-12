@@ -81,6 +81,8 @@ logging.basicConfig(
 logging.info("Setting Reloaded.")
 
 ALLOWED_HOSTS = ['*']
+INTERNAL_IPS = ['127.0.0.1', '192.168.1.105']
+LIST_PER_PAGE = 20
 
 # Application definition
 
@@ -95,9 +97,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_filters',
     'django_extensions',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -106,6 +110,21 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS':
+    'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 20,
+}
+
+# DEBUG_TOOLBAR_PANELS = [
+#     'debug_toolbar.panels.timer.TimerPanel',
+#     'debug_toolbar.panels.headers.HeadersPanel',
+#     'debug_toolbar.panels.request.RequestPanel',
+#     'debug_toolbar.panels.sql.SQLPanel',
+#     'debug_toolbar.panels.cache.CachePanel',
+#     'debug_toolbar.panels.logging.LoggingPanel',
+# ]
 
 ROOT_URLCONF = 'sysmo.urls'
 
@@ -174,6 +193,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+# STATIC_ROOT = 'asserts/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
 # Default primary key field type
