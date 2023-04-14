@@ -1,0 +1,116 @@
+{% load static %}
+<!--Bootstrap CSS -->
+{% comment %} <link
+  href="{% static '/css/cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css' %}"
+  rel="stylesheet"
+  integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+  crossorigin="anonymous"
+/> {% endcomment %}
+
+<style>
+  {% comment %} .submit-row a.deletelink {
+    display: block;
+    background: #ba2121;
+    border-radius: 4px;
+    padding: 10px 15px;
+    height: 35px;
+    line-height: 15px;
+    color: #fff;
+  } {% endcomment %}
+  td {
+        border-bottom: 0px;
+        vertical-align: center;
+    }
+</style>
+
+<textarea hidden id="mywidget-{{ name }}" name="{{ name }}">{{value}}</textarea>
+<br /><br />
+
+<div class="container">
+  <div class="row">
+    <table>
+      <tbody>
+        <tr>
+          {%for key, val in value.items%}
+          <td>
+            <table>
+              <span
+                class="badge bg-secondary"
+                style="font-size: 1rem"
+                id="label_{{key}}"
+                onchange="change()"
+              >
+                {{key}}
+              </span>
+              <br />
+              {%for val_key, val_value in val.items%}
+              <tr class="input-group mb-3" style="width: 10vw">
+                <td class="input-group-prepend">
+                  <span
+                    class="input-group-text"
+                    style="width: 5.5vw"
+                    id="basic-addon1"
+                    >{{val_key}}</span
+                  >
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    {% if val_key == "total" %}
+                        value="{{ val_value|filesizeformat }}"
+                    {% else %}
+                        value="{{val_value}}"
+                    {% endif %}
+                    class="form-control"
+                    placeholder=""
+                    aria-label=""
+                    aria-describedby="basic-addon1"
+                    id="input_{{key}}_{{val_key}}"
+                    onchange="change()"
+                  />
+                </td>
+              </tr>
+              <!-- <textarea type="text" id="input_{{a}}" size="50" rows="5" cols="40" onchange="change()" class="shadow-sm">
+                {{d}}
+                    </textarea> -->
+              {%endfor%}
+            </table>
+          </td>
+          {%endfor%}
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<script type="text/javascript">
+  var container = document.getElementById("mywidget-{{ name }}").value;
+
+  // deal with default saved
+  document.getElementById("mywidget-{{ name }}").value = JSON.stringify(container);
+
+  function change() {
+    var text_combin = '';
+
+    {%for mountpoint, disk_policy in value.items %}
+    var mp = "{{ key | safe }}"
+    var json_mix = '';
+
+    {%for policy_key, policy_value in disk_policy.items %}
+    var json_keys = "{{ val_key | safe }}"
+
+    var json_value = document.getElementById('input_' + mp + '_' + json_keys).value;
+
+    json_mix += "'" + json_keys + "': " + json_value + ",";
+    {% endfor %}
+    json_mix = json_mix.substring(0, json_mix.length - 1);
+    text_combin += "'" + mp + "': {" + json_mix + "},"
+    {% endfor %}
+
+    text_combin = text_combin.substring(0, text_combin.length - 1);
+    text_combin = "{" + text_combin + "}";
+    console.log(text_combin)
+    // after onChange
+    var json = "{{ value| safe}}";
+    document.getElementById("mywidget-{{ name }}").value = JSON.stringify(text_combin);
+  }
+</script>
