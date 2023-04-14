@@ -89,19 +89,28 @@ class PolicySerializer(serializers.ModelSerializer):
             'swap_policy', 'disk_policy'
         ]
 
-    def list(self, request):
-        logging.info("PolicySerializer.list")
-        return super().list(request)
-
 
 # class PerformanceSerializer(serializers.HyperlinkedModelSerializer):
 class PerformanceSerializer(serializers.ModelSerializer):
     machine = serializers.PrimaryKeyRelatedField(
         queryset=Machine.objects.all())
+    hostname = serializers.ReadOnlyField(source='machine.hostname')
+    group = serializers.ReadOnlyField(source='machine.group.name')
+    owner = serializers.ReadOnlyField(source='machine.owner.username')
+    policy = serializers.ReadOnlyField(source='machine.group.policy.name')
 
     class Meta:
         model = Performance
         fields = [
-            'id', 'machine', 'cpu_usage', 'mem_usage', 'swap_usage',
-            'disk_usage', 'datetime'
+            'id',
+            'machine',
+            'hostname',
+            'group',
+            'policy',
+            'owner',
+            'cpu_usage',
+            'mem_usage',
+            'swap_usage',
+            'disk_usage',
+            'datetime',
         ]

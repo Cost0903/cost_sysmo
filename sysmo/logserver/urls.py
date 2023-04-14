@@ -12,6 +12,9 @@ router.register(r"policies", views.PolicyViewSet, basename="policy")
 router.register(r"performances",
                 views.PerformanceViewSet,
                 basename="performance")
+# router.register(r"performances/get_last",
+#                 views.PerformanceViewSet.get_last.as_view(),
+#                 basename="last_performance")
 
 # app_name = "logserver"
 urlpatterns = [

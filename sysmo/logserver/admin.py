@@ -43,7 +43,7 @@ class JSONWidget(Widget):
 class MachineAdmin(admin.ModelAdmin):
     list_display = ('hostname', 'owner', 'group')
     list_filter = ('owner', 'group')
-    readonly_fields = ('ruuid')
+    # readonly_fields = ('ruuid')
     search_fields = ('hostname', 'owner__username', 'group__name')
     fieldsets = (
         ('主機資訊', {
@@ -87,6 +87,16 @@ class PerformanceAdmin(admin.ModelAdmin):
     # list_filter = ('machine', 'datetime')
     search_fields = ('machine__hostname', 'machine__owner__username',
                      'machine__group__name')
+
+
+class PolicyAdmin(admin.ModelAdmin):
+    list_display = (
+        'name',
+        'cpu_policy',
+        'mem_policy',
+        'swap_policy',
+        'disk_policy',
+    )
 
 
 admin.site.register(Machine, MachineAdmin)

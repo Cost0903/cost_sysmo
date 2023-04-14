@@ -110,6 +110,8 @@ def api_root(request, format=None):
         reverse('machinegroup-list', request=request, format=format),
         'policies':
         reverse('policy-list', request=request, format=format),
+        'performances':
+        reverse('performance-list', request=request, format=format),
     })
 
 
@@ -218,9 +220,9 @@ class MachineViewSet(viewsets.ModelViewSet):
     #                           disk_policy=disk_policy_default())
     # return super().create(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
-        logging.info("Get Method")
-        return self.list(request, *args, **kwargs)
+    # def get(self, request, *args, **kwargs):
+    #     logging.info("Get Method")
+    #     return self.list(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
         logging.info("Post Method")
@@ -252,7 +254,26 @@ class PerformanceViewSet(viewsets.ModelViewSet):
     queryset = Performance.objects.all()
     serializer_class = PerformanceSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
     # lookup_field = 'pk'
 
     # def perform_create(self, serializer):
     #     serializer.save(owner=self.request.user)
+    @action(detail=False)
+    def get_last(self, request, *args, **kwargs):
+        logging.info("Performance List Method")
+        logging.info(request.query_params)
+        hosts = []
+        if request.query_params.get('group'):
+            hosts = [
+                m.uuid for m in Machine.objects.filter(
+                    group=request.query_params.get('group')).only('uuid')
+            ]
+        else:
+            hosts = [m.uuid for m in Machine.objects.only('uuid')]
+        queryset = [
+            Performance.objects.filter(machine=host).last() for host in hosts
+        ]
+        logging.info(queryset[0].machine.hostname)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
