@@ -24,21 +24,30 @@ def disk_policy_default():
 class MachineSerializer(serializers.ModelSerializer):
     owner = serializers.ReadOnlyField(source='owner.username')
 
+    # group_name = serializers.ReadOnlyField(source='group.name')
+
     def create(self, validated_data):
         logging.info("MachineSerializer.create")
         logging.info(validated_data)
-        if validated_data['group'] is None:
-            try:
-                group = MachineGroup.objects.get(name="default")
-            except:
-                group = MachineGroup.objects.create(name="default")
-            validated_data['group'] = group
-        logging.info(validated_data)
+        try:
+            group = MachineGroup.objects.get(id=1)
+        except:
+            group = MachineGroup.objects.create(name="Default")
+        validated_data['group'] = group
+        # except:
+        #     group = MachineGroup.objects.get(name="Default")
+        #     logging.info(group)
+        #     validated_data['group'] = group
+        #     logging.info(validated_data)
 
         return super().create(validated_data)
 
     class Meta:
         model = Machine
+        # fields = [
+        #     'uuid', 'owner', 'hostname', 'group_name', 'description', 'ruuid',
+        #     'network_info', 'disk_info', 'cpu_info', 'mem_info', 'os_info'
+        # ]
         fields = '__all__'
 
 
@@ -56,10 +65,15 @@ class UserSerializer(serializers.ModelSerializer):
 class MachineGroupSerializer(serializers.ModelSerializer):
     machines = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Machine.objects.all())
+    policy_name = serializers.ReadOnlyField(source='policy.name')
+
+    # logging.info(policy_name.)
+    # p = serializers.PrimaryKeyRelatedField(source='policy.name',
+    #                                        read_only=True)
 
     class Meta:
         model = MachineGroup
-        fields = ['id', 'name', 'policy', 'machines']
+        fields = ['id', 'name', 'policy', 'policy_name', 'machines']
 
     def create(self, validated_data):
         logging.info("MachineGroupSerializer.create")

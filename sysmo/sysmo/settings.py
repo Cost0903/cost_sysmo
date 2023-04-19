@@ -151,8 +151,14 @@ WSGI_APPLICATION = 'sysmo.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': "logserver",
+        'USER': "root",
+        'PASSWORD': "1qaz@WSX",
+        'HOST': "127.0.0.1",
+        'PORT': 3306,
     }
 }
 
@@ -180,10 +186,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
+DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Taipei'
 
 USE_I18N = True
 

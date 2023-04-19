@@ -18,31 +18,26 @@
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
       crossorigin="anonymous"
     />
-    <link href="{% static 'dashboard.css' %}" rel="stylesheet" />
+    <link href="{% static 'css/dashboard.css' %}" rel="stylesheet" />
   </head>
   <body>
     {% include 'navbar.html' %}
     <div class="container-fluid">
       <div class="row">
-        {% include 'sidebar.html' %}
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-          {% block content %} {% endblock %}
-        </main>
+        {% include 'sidebar.html' %} {% block content %} {% endblock %}
       </div>
     </div>
-    {% comment %}
-    <div class="container">{% block content %} {% endblock %}</div>
-    {% endcomment %} {% comment %}
-    <div>{% include 'footer.html' %}</div>
-    {% endcomment %}
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
       integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
       crossorigin="anonymous"
     ></script>
+    <script>
+      window.jQuery ||
+        document.write(
+          '<script src="../../assets/js/vendor/jquery-slim.min.js"><\/script>'
+        );
+    </script>
     <script
       src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
       integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
@@ -53,5 +48,14 @@
       integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
       crossorigin="anonymous"
     ></script>
+    <!-- Icons -->
+    <script src="{% static 'js/feather.min.js' %}"></script>
+    <script>
+      feather.replace();
+    </script>
+    <script src={% static 'js/script.js' %}>
+    </script>
+    <!-- Graphs -->
+
   </body>
 </html>
