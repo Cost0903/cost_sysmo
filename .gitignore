@@ -4,8 +4,8 @@ sysmo/logserver/__pycache__/models.cpython-310.pyc
 sysmo/logserver/__pycache__/serializers.cpython-310.pyc
 sysmo/logserver/__pycache__/urls.cpython-310.pyc
 sysmo/logserver/__pycache__/views.cpython-310.pyc
-sysmo/logserver/__pycache__/*
-logserver/__pycache__/*
+sysmo/logserver/__pycache__/
+logserver/__pycache__/
 
 # venv file
 .venv/

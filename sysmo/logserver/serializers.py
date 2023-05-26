@@ -44,11 +44,12 @@ class MachineSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Machine
-        # fields = [
-        #     'uuid', 'owner', 'hostname', 'group_name', 'description', 'ruuid',
-        #     'network_info', 'disk_info', 'cpu_info', 'mem_info', 'os_info'
-        # ]
-        fields = '__all__'
+        fields = [
+            'url', 'uuid', 'owner', 'hostname', 'group', 'description',
+            'ruuid', 'network_info', 'disk_info', 'cpu_info', 'mem_info',
+            'os_info'
+        ]
+        # fields = '__all__'
 
 
 # class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -65,7 +66,8 @@ class UserSerializer(serializers.ModelSerializer):
 class MachineGroupSerializer(serializers.ModelSerializer):
     machines = serializers.PrimaryKeyRelatedField(
         many=True, queryset=Machine.objects.all())
-    policy_name = serializers.ReadOnlyField(source='policy.name')
+
+    # policy_name = serializers.ReadOnlyField(source='policy.name')
 
     # logging.info(policy_name.)
     # p = serializers.PrimaryKeyRelatedField(source='policy.name',
@@ -73,7 +75,7 @@ class MachineGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MachineGroup
-        fields = ['id', 'name', 'policy', 'policy_name', 'machines']
+        fields = ['url', 'id', 'name', 'policy', 'machines']
 
     def create(self, validated_data):
         logging.info("MachineGroupSerializer.create")
@@ -99,7 +101,7 @@ class PolicySerializer(serializers.ModelSerializer):
     class Meta:
         model = Policy
         fields = [
-            'id', 'name', 'description', 'cpu_policy', 'mem_policy',
+            'url', 'id', 'name', 'description', 'cpu_policy', 'mem_policy',
             'swap_policy', 'disk_policy'
         ]
 

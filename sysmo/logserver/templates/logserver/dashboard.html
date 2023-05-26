@@ -100,12 +100,30 @@
           </div>
         </tr>
       </thead>
+
+        <!--<tbody>
+          {% for p in performances %}
+          <tr>
+            <td>{{ p.machine.hostname }}</td>
+            <td>{{ p.machine.group }}</td>
+            <td>{{ p.machine.group.policy }}</td>
+            <td>{{ p.machine.owner }}</td>
+            <td>{{ p.cpu_usage }}</td>
+            <td>{{ p.mem_usage }}</td>
+            <td>{{ p.swap_usage }}</td>
+            <td>{{ p.disk_usage }}</td>
+            <td>{{ p.datetime }}</td>
+            {% comment %} <td>{{ host.status }}</td> {% endcomment %}
+          </tr>
+          {% endfor %}
+        </tbody>-->
       <tbody class="dy_data"></tbody>
     </table>
   </div>
 </main>
+
 <script type="text/javascript" charset="utf-8">
-  window.onload = function test() {
+  window.onload = function () {
     const group = "All"
     getPerf(group);
     const groupselect = document.getElementsByClassName("grouplist");
@@ -117,13 +135,11 @@
   function renderData(data) {
     let dy_data = document.getElementsByClassName("dy_data");
     dy_data[0].innerHTML = ""
-    //data = data.slice(2)
-    console.log(typeof data)
-    console.log(data)
     data.forEach((item) => {
       console.log(item)
       delete item['id']
       delete item['machine']
+      delete item['url']
       let newRow = document.createElement("tr");
       Object.values(item).forEach((value) => {
         let newCell = document.createElement("td");
@@ -132,121 +148,30 @@
       });
       dy_data[0].appendChild(newRow);
     });
-    /*let row = document.createElement("tr");
-    row.id = `${data.machine}`;
-    ({id,machine,...keys} = data)
-    for (let key in keys) {
-      let cell = document.createElement("td");
-      cell.id = `dy_data_${key}`;
-      cell.innerText = data[key];
-      row.appendChild(cell);
-    }
-    return row;*/
   }
 
   function getPerf(group) {
-    //console.log(group)
     const html_path = (group == "All") ? "http://192.168.1.138/logserver/performances/get_last/" : `http://192.168.1.138/logserver/performances/get_last/?group=${group}`;
 
 
     fetch(html_path)
-      .then(function (response) {
-        return response.json();
-      })
-      .then(function (data) {
-        renderData(data);
-        //dy_data[0].innerHTML = ""
-        /*for (var i = 0; i < data.length; i++) {
-          let row = getDataRow(data[i]);
-          dy_data[0].appendChild(row);
-        }*/
-      });
-  }
-
-  function getGroupPerf(group) {
-    let groupselect = document.getElementsByClassName("grouplist");
-    groupselect[0].addEventListener("change", function () {
-      fetch(
-        `http://192.168.1.138/logserver/performances/get_last/?group=${groupselect[0].value}`
-      )
-        .then(function (response) {
-          console.log("test1");
-          return response.json();
-        })
-        .then(function (data) {
-          console.log("test2");
-          dy_data = document.getElementsByClassName("dy_data");
-          let dy_data_list = "";
-          console.log(dy_data);
-          for (var i = 0; i < data.length; i++) {
-            dy_data_list += `
-      <tr id="dy_data_${i}">
-        <td id="dy_data_hostname">${data[i].hostname}</td>
-        <td id="dy_data_group">${data[i].group}</td>
-        <td id="dy_data_owner">${data[i].owner}</td>
-        <td id="dy_data_cpu_usage">${data[i].cpu_usage}</td>
-        <td id="dy_data_mem_usage">${data[i].mem_usage}</td>
-        <td id="dy_data_swap_usage">${data[i].swap_usage}</td>
-        <td id="dy_data_disk_usage">${data[i].disk_usage}</td>
-        <td id="dy_data_datetime">${data[i].datetime}</td>
-      </tr>
-        `;
-          }
-          console.log(dy_data_list);
-          dy_data[0].innerHTML = dy_data_list;
-        });
-    });
-  }
-
-  let timer = 1;
-
-  /*fetch("http://192.168.1.138/logserver/performances/get_last/")
     .then(function (response) {
       return response.json();
     })
     .then(function (data) {
-      dy_data = document.getElementsByClassName("dy_data");
-      let dy_data_list = "";
-      console.log(dy_data);
-      for (var i = 0; i < data.length; i++) {
-        dy_data_list += `
-      <tr id="dy_data_${i}">
-        <td id="dy_data_hostname">${data[i].hostname}</td>
-        <td id="dy_data_group">${data[i].group}</td>
-        <td id="dy_data_owner">${data[i].owner}</td>
-        <td id="dy_data_cpu_usage">${data[i].cpu_usage}</td>
-        <td id="dy_data_mem_usage">${data[i].mem_usage}</td>
-        <td id="dy_data_swap_usage">${data[i].swap_usage}</td>
-        <td id="dy_data_disk_usage">${data[i].disk_usage}</td>
-        <td id="dy_data_datetime">${data[i].datetime}</td>
-      </tr>
-        `;
-      }
-      console.log(dy_data_list);
-      dy_data[0].innerHTML = dy_data_list;
-      /*for (var i = 0; i < data.length; i++){
-      console.log(data[i])
-      dy_data.innerHTML = `
-      <td>${data[i].hostname}</td>
-      <td><a href="http://192.168.1.138/logserver/group/${data[i].group}">${data[i].group}</td>
-      <td>${data[i].cpu_usage}</td>
-      <td>${data[i].mem_usage}</td>
-      <td>${data[i].swap_usage}</td>
-      <td>${data[i].disk_usage}</td>
-      <td>${data[i].datetime}</td>
-      `
-    }
-      console.log(data);
-    });*/
+      renderData(data);
+    });
+  }
+
 </script>
 <!--
-<script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.1/dist/Chart.min.js"></script>
-<script>
-  var ctx = document.getElementById("myChart");
-  var myChart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: [
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.7.1/dist/Chart.min.js"></script>
+  <script>
+    var ctx = document.getElementById("myChart");
+    var myChart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: [
         "Sunday",
         "Monday",
         "Tuesday",
@@ -254,8 +179,8 @@
         "Thursday",
         "Friday",
         "Saturday",
-      ],
-      datasets: [
+        ],
+        datasets: [
         {
           data: [15339, 21345, 18483, 24003, 23489, 24092, 12034],
           lineTension: 0,

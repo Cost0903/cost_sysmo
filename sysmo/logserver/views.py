@@ -36,8 +36,15 @@ def dashboard(request):
     groups = MachineGroup.objects.all()
     host_count = hosts.count()
     performances = []
+    Machine.objects.prefetch_related('performance')
+
     for host in hosts:
-        performances.append(Performance.objects.filter(machine=host).last)
+        # logging.info(host)
+        performances.append(
+            Performance.objects.select_related('machine').annotate(
+                machine=host).last) if Performance.objects.filter(
+                    machine=host) else None
+    # logging.info(performances)
     # dashboard_value = {}
     normal_count = 1  # hosts.filter(status="normal").count()
     alert_count = 0  # hosts.filter(status="alert").count()
@@ -147,7 +154,7 @@ class PolicyViewSet(viewsets.ModelViewSet):
     queryset = Policy.objects.all()
     serializer_class = PolicySerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    lookup_field = 'name'
+    # lookup_field = 'name'
 
     # def create(self, request, *args, **kwargs):
     #     return super().create(request, *args, **kwargs)
@@ -192,25 +199,18 @@ class PerformanceViewSet(viewsets.ModelViewSet):
 
     @action(detail=False)
     def get_last(self, request, *args, **kwargs):
-        logging.info("Performance List Method")
-        logging.info(request.query_params)
         hosts = []
         if request.query_params.get('group'):
             hosts = [
                 m.uuid for m in Machine.objects.filter(
                     group__name=request.query_params.get('group')).only('uuid')
             ]
-            logging.info(f"if  host_list: {hosts}")
         else:
             hosts = [m.uuid for m in Machine.objects.only('uuid')]
-            logging.info(f"else  host_list: {hosts}")
         queryset = [
             Performance.objects.filter(machine=host).last() for host in hosts
             if Performance.objects.filter(machine=host)
         ]
 
-        logging.info(f"queryset: {queryset}")
-        logging.info(f"type: {type(queryset)}")
-        # logging.info(queryset[0].machine.hostname)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
